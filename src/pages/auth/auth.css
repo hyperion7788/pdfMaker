@@ -1,0 +1,35 @@
+.auth-box {
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 15px 20px #00000080;
+}
+.login-btn {
+  padding: 5px 30px;
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  color: #fff;
+  border-radius: 5px;
+  font-size: 21px;
+  transition: 0.5s ease-in-out;
+}
+
+.pinCode-inp {
+  width: 15%;
+  height: 3rem;
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 10px;
+  border: 2px solid #1f2937;
+  border-radius: 0.5rem;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

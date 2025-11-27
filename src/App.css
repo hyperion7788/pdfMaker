@@ -1,0 +1,263 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+* {
+  font-family: "Inter", sans-serif;
+}
+.bebas {
+  font-family: "Bebas Neue", sans-serif;
+}
+@keyframes floatUpDown {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-image {
+  animation: floatUpDown 3s ease-in-out infinite;
+}
+
+.navbarr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 6px 40px;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.1) !important;
+}
+.nav-pd {
+  margin: 6px 40px;
+}
+.navbar-left {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.border-none {
+  border: none !important;
+}
+.acc-circle {
+  padding: 10px 17px;
+  color: #fff;
+  border-radius: 100px;
+  font-size: 20px;
+  height: 50px;
+  width: 50px;
+  cursor: pointer;
+  background-color: #00aa63;
+}
+.cart-btn {
+  font-size: 35px;
+  color: #00aa63;
+  position: relative;
+}
+.cart-number {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  text-align: center;
+  font-size: 12px;
+  color: #fff;
+  background-color: #00aa63;
+  padding: 2px 8px;
+  border-radius: 50%;
+}
+.custom-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.custom-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+  min-width: 150px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+}
+
+.custom-dropdown-item {
+  padding: 10px;
+  color: #1f2937;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.3s ease;
+}
+
+.custom-dropdown-item:hover {
+  background-color: #f1f1f1;
+}
+
+.mt-top {
+  margin-top: 70px;
+}
+.close-btn {
+  background-color: initial;
+  border: none;
+  color: #1f2937;
+  cursor: pointer;
+  font-size: 30px;
+  display: none;
+  position: absolute;
+  right: 20px;
+  top: 10px;
+}
+.nav-link-h {
+  font-size: 16px !important;
+  margin: 0 10px;
+  position: relative !important;
+  border-radius: 5px;
+  color: #fff;
+  text-transform: uppercase;
+  position: relative;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
+}
+.nav-link {
+  font-size: 16px !important;
+  margin: 0 10px;
+  position: relative !important;
+  border-radius: 5px;
+  color: #000;
+  text-transform: uppercase;
+  position: relative;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
+}
+.nav-link::after {
+  background: #00aa63;
+  bottom: -4px;
+  content: "";
+  height: 2px;
+  left: 0;
+  position: absolute;
+  transition: 0.5s;
+  width: 0;
+}
+.nav-link:hover {
+  color: #00aa63 !important;
+}
+
+.nav-link:hover.nav-link::after {
+  width: 100%;
+}
+
+.open-nav {
+  background-color: initial;
+  border: none;
+  color: #1f2937;
+  font-size: 35px;
+  display: none;
+}
+button {
+  cursor: pointer;
+}
+.nav-right-c {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+.active-menu {
+  right: 0 !important;
+}
+.sleep-quiz-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #000;
+  font-size: 16px;
+  text-transform: uppercase;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.sleep-quiz-button:hover {
+  color: #00aa63;
+}
+.sleep-icon {
+  font-size: 20px;
+  animation: sleepBounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(31, 41, 55, 0.2));
+}
+.page-logo {
+  width: 200px;
+}
+@keyframes sleepBounce {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(-5deg);
+  }
+}
+
+/* Subtle pulsing effect */
+
+@keyframes sleepPulse {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.1;
+    transform: scale(1.02);
+  }
+}
+
+/* Focus state for accessibility */
+.sleep-quiz-button:focus {
+  outline: none;
+  box-shadow: 0 8px 24px rgba(31, 41, 55, 0.3), 0 0 0 3px rgba(31, 41, 55, 0.2);
+}
+
+/* Responsive design */
+
+@media only screen and (max-width: 862px) {
+  #sidemenu {
+    align-items: flex-start;
+    background-color: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding-top: 75px;
+    position: fixed;
+    right: -281px;
+    top: 0;
+    transition: 0.3s;
+    width: 250px;
+    z-index: 100;
+  }
+
+  .close-btn,
+  .open-nav {
+    display: block;
+  }
+}
+@media (max-width: 768px) {
+  .sleep-quiz-button {
+    font-size: 15px;
+    gap: 10px;
+  }
+
+  .sleep-icon {
+    font-size: 18px;
+  }
+}
