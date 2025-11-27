@@ -14,7 +14,6 @@ import {
   Shield,
   Key,
 } from "lucide-react";
-import { encryptPDF } from "@pdfsmaller/pdf-encrypt-lite";
 
 const AddPassword = () => {
   const [pdfFile, setPdfFile] = useState(null);
@@ -27,6 +26,7 @@ const AddPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState("");
   const [fileInfo, setFileInfo] = useState(null);
+  const [encryptionMethod, setEncryptionMethod] = useState("standard"); // 'standard' or 'strong'
   const fileInputRef = useRef(null);
 
   // Password strength checker
@@ -53,12 +53,7 @@ const AddPassword = () => {
     setIsDragging(false);
     const files = e.dataTransfer.files;
     if (files[0] && files[0].type === "application/pdf") {
-      setPdfFile(files[0]);
-      setSecuredPdf(null);
-      setFileInfo({
-        name: files[0].name,
-        size: (files[0].size / 1024 / 1024).toFixed(2),
-      });
+      processSelectedFile(files[0]);
     } else {
       alert("Please drop a valid PDF file.");
     }
@@ -77,18 +72,32 @@ const AddPassword = () => {
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file && file.type === "application/pdf") {
-      setPdfFile(file);
-      setSecuredPdf(null);
-      setFileInfo({
-        name: file.name,
-        size: (file.size / 1024 / 1024).toFixed(2),
-      });
+      processSelectedFile(file);
     } else {
       alert("Please select a valid PDF file.");
     }
   };
 
-  // Secure PDF with password (via backend API)
+  const processSelectedFile = (file) => {
+    if (file.size > 50 * 1024 * 1024) {
+      // 50MB limit
+      alert("File size too large. Please select a file smaller than 50MB.");
+      return;
+    }
+    setPdfFile(file);
+    setSecuredPdf(null);
+    setFileInfo({
+      name: file.name,
+      size: (file.size / 1024 / 1024).toFixed(2),
+    });
+    setPassword("");
+    setConfirmPassword("");
+    setPasswordStrength("");
+  };
+
+  // ==========================================
+  // SOLUTION 1: Using pdf-lib (More reliable)
+  // ==========================================
   const securePdfWithPassword = async () => {
     if (!pdfFile) {
       alert("Please select a PDF file first.");
@@ -106,37 +115,98 @@ const AddPassword = () => {
     setIsProcessing(true);
 
     try {
-      // Read file as ArrayBuffer
+      // Dynamic import for pdf-lib
+      const { PDFDocument } = await import("pdf-lib");
+
+      // Read the PDF file
       const arrayBuffer = await pdfFile.arrayBuffer();
 
-      // Convert to Uint8Array — required for encryptPDF
-      const pdfBytes = new Uint8Array(arrayBuffer);
+      // Load the PDF document
+      const pdfDoc = await PDFDocument.load(arrayBuffer);
 
-      // Encrypt using pdf-encrypt-lite
-      const encryptedBytes = await encryptPDF(pdfBytes, password, password);
+      // Encrypt the PDF
+      pdfDoc.encrypt({
+        userPassword: password,
+        ownerPassword: password, // Same as user password for simplicity
+        permissions: {
+          printing: "lowResolution", // Allow printing but low resolution
+          modifying: false, // Disable modifying
+          copying: false, // Disable copying
+          annotating: false, // Disable annotations
+          fillingForms: false, // Disable form filling
+          contentAccessibility: false, // Disable content accessibility
+          documentAssembly: false, // Disable document assembly
+        },
+      });
 
-      // Convert result into Blob for download
-      const blob = new Blob([encryptedBytes], { type: "application/pdf" });
+      // Save the encrypted PDF
+      const encryptedPdfBytes = await pdfDoc.save();
+
+      // Create blob and URL
+      const blob = new Blob([encryptedPdfBytes], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
 
-      // Store for download section
       setSecuredPdf(url);
-
-      // ✅ Optional: automatically trigger download
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${pdfFile.name.replace(".pdf", "")}_secured.pdf`;
-      a.click();
-
-      alert(
-        "✅ PDF successfully protected! It will now require the password when opened."
-      );
     } catch (error) {
       console.error("Encryption failed:", error);
-      alert("❌ Failed to encrypt PDF. Check console for details.");
+      alert(`❌ Failed to encrypt PDF: ${error.message}`);
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  // ==========================================
+  // SOLUTION 2: Backend API Approach
+  // ==========================================
+  const securePdfWithBackend = async () => {
+    if (!pdfFile) {
+      alert("Please select a PDF file first.");
+      return;
+    }
+    if (!password) {
+      alert("Please enter a password.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("pdf", pdfFile);
+      formData.append("password", password);
+      formData.append("encryptionLevel", encryptionMethod);
+
+      const response = await fetch("/api/encrypt-pdf", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Server error: " + response.statusText);
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setSecuredPdf(url);
+    } catch (error) {
+      console.error("Backend encryption failed:", error);
+      alert(`❌ Encryption failed: ${error.message}`);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  // ==========================================
+  // SOLUTION 3: Using pdfjs-dist (Alternative)
+  // ==========================================
+  const securePdfWithPDFJS = async () => {
+    // This is a more complex implementation using PDF.js
+    // Would require additional setup and worker
+    alert("PDF.js implementation would require additional setup");
   };
 
   const handleReset = () => {
@@ -149,7 +219,6 @@ const AddPassword = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-    // Clean up URL
     if (securedPdf) {
       URL.revokeObjectURL(securedPdf);
     }
@@ -185,8 +254,8 @@ const AddPassword = () => {
             <Sparkles className="w-8 h-8 text-yellow-400 animate-pulse ml-2" />
           </div>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            Protect your PDF documents with strong passwords. Keep your
-            sensitive information safe and secure.
+            Protect your PDF documents with strong passwords. Multiple
+            encryption methods available.
           </p>
         </div>
 
@@ -262,14 +331,50 @@ const AddPassword = () => {
                 </button>
               </div>
 
-              {/* Password Settings */}
+              {/* Encryption Method Selection */}
+              <div className="mb-6">
+                <label className="flex items-center text-lg font-semibold mb-3">
+                  <Shield className="w-5 h-5 mr-2 text-blue-400" />
+                  Encryption Method
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    onClick={() => setEncryptionMethod("standard")}
+                    className={`p-4 rounded-lg border-2 transition-all duration-200 ${
+                      encryptionMethod === "standard"
+                        ? "border-purple-500 bg-purple-900/30"
+                        : "border-gray-600 bg-gray-600/50 hover:border-gray-500"
+                    }`}
+                  >
+                    <div className="text-center">
+                      <div className="font-semibold">Standard</div>
+                      <div className="text-sm text-gray-400 mt-1">Frontend</div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => setEncryptionMethod("strong")}
+                    className={`p-4 rounded-lg border-2 transition-all duration-200 ${
+                      encryptionMethod === "strong"
+                        ? "border-green-500 bg-green-900/30"
+                        : "border-gray-600 bg-gray-600/50 hover:border-gray-500"
+                    }`}
+                  >
+                    <div className="text-center">
+                      <div className="font-semibold">Strong</div>
+                      <div className="text-sm text-gray-400 mt-1">Backend</div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Password Inputs */}
               <div className="space-y-6">
                 <div>
                   <label className="flex items-center text-lg font-semibold mb-4">
                     <Lock className="w-5 h-5 mr-2 text-purple-400" />
                     Set PDF Password
                   </label>
-                  {/* Password Input */}
+
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -308,7 +413,7 @@ const AddPassword = () => {
                         </div>
                       )}
                     </div>
-                    {/* Confirm Password */}
+
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
                         Confirm Password *
@@ -352,9 +457,17 @@ const AddPassword = () => {
                       <p className="font-semibold mb-1">Security Features:</p>
                       <ul className="list-disc list-inside space-y-1">
                         <li>Password required to open the PDF</li>
-                        <li>Basic RC4 128-bit encryption applied</li>
+                        <li>
+                          {encryptionMethod === "standard"
+                            ? "Standard"
+                            : "Strong"}{" "}
+                          encryption applied
+                        </li>
                         <li>Copying and content extraction protected</li>
-                        <li>Strong password protection for maximum security</li>
+                        <li>Editing and printing restrictions</li>
+                        {encryptionMethod === "strong" && (
+                          <li>Advanced AES encryption</li>
+                        )}
                       </ul>
                       <p className="mt-2 text-yellow-400">
                         ⚠️ Remember your password! It cannot be recovered if
@@ -364,24 +477,13 @@ const AddPassword = () => {
                   </div>
                 </div>
 
-                {/* Password Tips */}
-                <div className="bg-purple-900/30 border border-purple-500/50 rounded-lg p-4">
-                  <div className="flex items-start">
-                    <Key className="w-5 h-5 text-purple-400 mr-3 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-gray-300">
-                      <p className="font-semibold mb-1">Password Tips:</p>
-                      <ul className="list-disc list-inside space-y-1">
-                        <li>Use at least 8 characters</li>
-                        <li>Combine uppercase and lowercase letters</li>
-                        <li>Include numbers and special characters</li>
-                        <li>Avoid common words or personal information</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
+                {/* Secure Button */}
                 <button
-                  onClick={securePdfWithPassword}
+                  onClick={
+                    encryptionMethod === "standard"
+                      ? securePdfWithPassword
+                      : securePdfWithBackend
+                  }
                   disabled={
                     !password ||
                     !confirmPassword ||
@@ -391,7 +493,9 @@ const AddPassword = () => {
                   className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 disabled:transform-none shadow-xl hover:shadow-2xl inline-flex items-center justify-center"
                 >
                   <Shield className="w-6 h-6 mr-2" />
-                  Secure PDF with Password
+                  {encryptionMethod === "standard"
+                    ? "Secure PDF (Frontend)"
+                    : "Secure PDF (Backend)"}
                 </button>
               </div>
             </div>
@@ -402,9 +506,13 @@ const AddPassword = () => {
         {isProcessing && (
           <div className="text-center py-12 animate-fade-in">
             <Loader2 className="w-16 h-16 text-purple-400 animate-spin mx-auto mb-4" />
-            <p className="text-xl text-gray-300 mb-2">Securing your PDF...</p>
+            <p className="text-xl text-gray-300 mb-2">
+              {encryptionMethod === "standard"
+                ? "Securing your PDF..."
+                : "Processing with backend..."}
+            </p>
             <p className="text-gray-400">
-              Encrypting document and applying security settings
+              Encrypting document and applying security settings...
             </p>
             <div className="mt-4 bg-gray-700 rounded-full h-2 w-64 mx-auto">
               <div className="bg-purple-600 h-2 rounded-full animate-pulse"></div>
@@ -412,7 +520,7 @@ const AddPassword = () => {
           </div>
         )}
 
-        {/* Results */}
+        {/* Results Section - Same as before */}
         {securedPdf && (
           <div className="max-w-2xl mx-auto animate-fade-in">
             <div className="bg-gradient-to-r from-gray-700 to-gray-600 rounded-2xl p-8 shadow-2xl">
@@ -434,6 +542,7 @@ const AddPassword = () => {
                   </p>
                 </div>
               </div>
+
               <div className="bg-gray-800/50 rounded-xl p-6 mb-6">
                 <h4 className="font-semibold text-lg mb-3 text-center">
                   Security Features Applied
@@ -445,7 +554,10 @@ const AddPassword = () => {
                   </div>
                   <div className="flex items-center text-green-400">
                     <CheckCircle className="w-4 h-4 mr-2" />
-                    RC4 128-bit encryption
+                    {encryptionMethod === "standard"
+                      ? "Standard"
+                      : "Strong"}{" "}
+                    encryption
                   </div>
                   <div className="flex items-center text-red-400">
                     <Lock className="w-4 h-4 mr-2" />
@@ -457,6 +569,7 @@ const AddPassword = () => {
                   </div>
                 </div>
               </div>
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
                   href={securedPdf}
@@ -477,6 +590,7 @@ const AddPassword = () => {
                   Secure Another PDF
                 </button>
               </div>
+
               <div className="mt-6 text-center">
                 <p className="text-yellow-400 text-sm">
                   ⚠️ Remember to save your password in a secure location!
@@ -495,9 +609,12 @@ const AddPassword = () => {
                   <Lock className="w-8 h-8" />
                 </div>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Strong Encryption</h3>
+              <h3 className="text-xl font-semibold mb-2">
+                Multiple Encryption Methods
+              </h3>
               <p className="text-gray-400">
-                RC4 128-bit encryption to protect your sensitive documents
+                Choose between frontend or backend encryption based on your
+                needs
               </p>
             </div>
             <div className="text-center p-6 bg-gray-700/50 rounded-xl hover:bg-gray-700 transition-all duration-300 transform hover:scale-105">
@@ -507,7 +624,9 @@ const AddPassword = () => {
                 </div>
               </div>
               <h3 className="text-xl font-semibold mb-2">Access Control</h3>
-              <p className="text-gray-400">Password protection for your PDFs</p>
+              <p className="text-gray-400">
+                Complete control over printing, editing, and copying permissions
+              </p>
             </div>
             <div className="text-center p-6 bg-gray-700/50 rounded-xl hover:bg-gray-700 transition-all duration-300 transform hover:scale-105">
               <div className="flex justify-center mb-4">
@@ -517,26 +636,19 @@ const AddPassword = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2">Instant Download</h3>
               <p className="text-gray-400">
-                Get your password-protected PDF immediately
+                Get your password-protected PDF immediately after processing
               </p>
             </div>
           </div>
         )}
       </div>
+
       <style>{`
         @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in {
-          animation: fade-in 0.6s ease-out forwards;
-        }
+        .animate-fade-in { animation: fade-in 0.6s ease-out forwards; }
       `}</style>
     </div>
   );

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import {
   Star,
-  Moon,
-  Heart,
+  FileText,
+  Download,
   ChevronLeft,
   ChevronRight,
   Play,
   Pause,
+  Zap,
 } from "lucide-react";
 
 const Testimonials = () => {
@@ -18,74 +19,80 @@ const Testimonials = () => {
     {
       id: 1,
       name: "Sarah Johnson",
-      age: 34,
-      issue: "Chronic Insomnia",
+      profession: "Marketing Director",
+      company: "TechCorp Inc.",
       rating: 5,
-      text: "After 3 years of sleepless nights, I finally found peace. The personalized sleep program transformed my life completely. I now sleep 7-8 hours every night and wake up refreshed!",
-      sleepImprovement: "From 2 hours to 8 hours",
-      timeframe: "3 weeks",
+      text: "This PDF editor has revolutionized our workflow! Converting hundreds of documents to PDF while maintaining perfect formatting saved us countless hours. The batch processing feature is a game-changer!",
+      improvement: "Saved 15+ hours weekly",
+      timeframe: "2 months",
       location: "New York, NY",
       avatar: "SJ",
+      feature: "Batch PDF Conversion",
     },
     {
       id: 2,
       name: "Michael Chen",
-      age: 42,
-      issue: "Sleep Anxiety",
+      profession: "Freelance Designer",
+      company: "Creative Studio",
       rating: 5,
-      text: "The anxiety around bedtime used to consume me. Thanks to the expert guidance and natural techniques, I've reclaimed my nights and my energy. My productivity at work has doubled!",
-      sleepImprovement: "From panic to peace",
-      timeframe: "6 weeks",
+      text: "As a designer, I need precise control over my PDFs. The editing tools are incredibly intuitive - merging client files, compressing without quality loss, and the OCR feature works flawlessly!",
+      improvement: "90% faster client deliveries",
+      timeframe: "3 weeks",
       location: "San Francisco, CA",
       avatar: "MC",
+      feature: "Advanced Editing & OCR",
     },
     {
       id: 3,
       name: "Emma Rodriguez",
-      age: 28,
-      issue: "Work Stress Insomnia",
+      profession: "University Professor",
+      company: "State University",
       rating: 5,
-      text: "Working night shifts destroyed my sleep cycle. The customized approach helped me establish a healthy routine that works with my schedule. I feel like myself again!",
-      sleepImprovement: "Consistent 6+ hours",
-      timeframe: "4 weeks",
+      text: "Creating course materials used to take days. Now I merge research papers, add annotations, and compress files for students in minutes. The accessibility features make my materials inclusive for all students!",
+      improvement: "75% time reduction",
+      timeframe: "1 month",
       location: "Chicago, IL",
       avatar: "ER",
+      feature: "Document Merging & Compression",
     },
     {
       id: 4,
       name: "David Thompson",
-      age: 55,
-      issue: "Age-related Sleep Issues",
+      profession: "Legal Assistant",
+      company: "Law Partners LLC",
       rating: 5,
-      text: "I thought poor sleep was just part of aging. Wrong! I'm sleeping better now than I did in my 30s. My energy levels are through the roof and my wife says I don't snore anymore!",
-      sleepImprovement: "Quality deep sleep restored",
-      timeframe: "8 weeks",
+      text: "Handling legal documents requires precision and security. The redaction tools and password protection give me peace of mind. Converting scans to searchable PDFs has made our archives completely digital!",
+      improvement: "100% digital workflow",
+      timeframe: "6 weeks",
       location: "Austin, TX",
       avatar: "DT",
+      feature: "Security & OCR",
     },
     {
       id: 5,
       name: "Lisa Park",
-      age: 38,
-      issue: "Postpartum Insomnia",
+      profession: "Small Business Owner",
+      company: "Bloom Boutique",
       rating: 5,
-      text: "Being a new mom with zero sleep was overwhelming. The gentle, natural methods helped me find rest even with a baby. I'm a better mother now that I'm well-rested.",
-      sleepImprovement: "From exhaustion to restoration",
-      timeframe: "5 weeks",
+      text: "From invoices to marketing materials, this tool does it all! The templates saved me from hiring a designer. Converting my product catalogs to PDF while keeping them mobile-friendly boosted my sales!",
+      improvement: "60% cost savings",
+      timeframe: "2 weeks",
       location: "Seattle, WA",
       avatar: "LP",
+      feature: "Templates & Mobile Optimization",
     },
     {
       id: 6,
       name: "Robert Wilson",
-      age: 47,
-      issue: "Travel Insomnia",
+      profession: "Project Manager",
+      company: "Construction Plus",
       rating: 5,
-      text: "Constant business travel made sleep impossible. The portable techniques I learned work in any hotel room, any time zone. My jet lag is now manageable!",
-      sleepImprovement: "Adaptable sleep anywhere",
-      timeframe: "2 weeks",
+      text: "Managing construction documents across teams was chaotic. Now we merge blueprints, add markups, and share secured PDFs instantly. The collaboration features have improved our project timelines significantly!",
+      improvement: "40% faster approvals",
+      timeframe: "1 month",
       location: "Miami, FL",
       avatar: "RW",
+      feature: "Collaboration Tools",
     },
   ];
 
@@ -134,24 +141,24 @@ const Testimonials = () => {
       <Star
         key={i}
         className={`w-5 h-5 ${
-          i < rating ? "text-yellow-400 fill-current" : "text-gray-300"
+          i < rating ? "text-blue-500 fill-current" : "text-gray-300"
         }`}
       />
     ));
   };
 
   return (
-    <section className="py-20 px-4 bg-gradient-to-br from-green-50 to-blue-50 relative overflow-hidden">
+    <section className="py-20 px-4 bg-gradient-to-br from-blue-50 to-indigo-50 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-10 left-10 w-20 h-20 text-green-600">
-          <Moon className="w-full h-full" />
+        <div className="absolute top-10 left-10 w-20 h-20 text-blue-600">
+          <FileText className="w-full h-full" />
         </div>
-        <div className="absolute top-32 right-20 w-16 h-16 text-green-600">
-          <Star className="w-full h-full" />
+        <div className="absolute top-32 right-20 w-16 h-16 text-blue-600">
+          <Download className="w-full h-full" />
         </div>
-        <div className="absolute bottom-20 left-1/4 w-12 h-12 text-green-600">
-          <Heart className="w-full h-full" />
+        <div className="absolute bottom-20 left-1/4 w-12 h-12 text-blue-600">
+          <Zap className="w-full h-full" />
         </div>
       </div>
 
@@ -159,28 +166,28 @@ const Testimonials = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <div className="flex items-center justify-center mb-4">
-            <Moon className="w-8 h-8 text-green-600 mr-3" />
+            <FileText className="w-8 h-8 text-blue-600 mr-3" />
             <h2 className="text-4xl md:text-5xl font-bold text-gray-800">
-              Sleep Success Stories
+              PDF Success Stories
             </h2>
           </div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Join thousands who've transformed their nights and reclaimed their
-            days
+            Join thousands of professionals who've transformed their document
+            workflow
           </p>
 
           {/* Stats */}
           <div className="flex items-center justify-center space-x-8 mb-8">
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">10,000+</div>
-              <div className="text-gray-600">Lives Changed</div>
+              <div className="text-3xl font-bold text-blue-600">50,000+</div>
+              <div className="text-gray-600">Documents Processed Daily</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">94%</div>
-              <div className="text-gray-600">Success Rate</div>
+              <div className="text-3xl font-bold text-blue-600">98%</div>
+              <div className="text-gray-600">Customer Satisfaction</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">4.9/5</div>
+              <div className="text-3xl font-bold text-blue-600">4.8/5</div>
               <div className="text-gray-600">Average Rating</div>
             </div>
           </div>
@@ -190,7 +197,7 @@ const Testimonials = () => {
         <div className="relative">
           {/* Main Testimonial Card */}
           <div
-            className={`bg-white rounded-3xl p-8 md:p-12 shadow-2xl border border-green-100 max-w-4xl mx-auto transition-all duration-500 ${
+            className={`bg-white rounded-3xl p-8 md:p-12 shadow-2xl border border-blue-100 max-w-4xl mx-auto transition-all duration-500 ${
               isTransitioning
                 ? "opacity-0 transform scale-95"
                 : "opacity-100 transform scale-100"
@@ -204,7 +211,7 @@ const Testimonials = () => {
               }`}
             >
               <div
-                className={`w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4 md:mb-0 md:mr-6 transition-all duration-500 ${
+                className={`w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4 md:mb-0 md:mr-6 transition-all duration-500 ${
                   isTransitioning
                     ? "opacity-0 transform rotate-180 scale-75"
                     : "opacity-100 transform rotate-0 scale-100"
@@ -219,10 +226,10 @@ const Testimonials = () => {
                       {testimonials[currentSlide].name}
                     </h4>
                     <p className="text-gray-600">
-                      Age {testimonials[currentSlide].age} •{" "}
-                      {testimonials[currentSlide].issue}
+                      {testimonials[currentSlide].profession} •{" "}
+                      {testimonials[currentSlide].company}
                     </p>
-                    <p className="text-sm text-green-600">
+                    <p className="text-sm text-blue-600">
                       {testimonials[currentSlide].location}
                     </p>
                   </div>
@@ -244,26 +251,34 @@ const Testimonials = () => {
             </blockquote>
 
             <div
-              className={`grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-gray-100 transition-all duration-500 ${
+              className={`grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-gray-100 transition-all duration-500 ${
                 isTransitioning
                   ? "opacity-0 transform translate-y-6"
                   : "opacity-100 transform translate-y-0"
               }`}
             >
-              <div className="text-center p-4 bg-green-50 rounded-xl">
-                <div className="text-sm text-gray-500 mb-1">
-                  Sleep Improvement
-                </div>
-                <div className="font-bold text-green-600 text-lg">
-                  {testimonials[currentSlide].sleepImprovement}
-                </div>
-              </div>
               <div className="text-center p-4 bg-blue-50 rounded-xl">
                 <div className="text-sm text-gray-500 mb-1">
-                  Results Timeline
+                  Productivity Gain
                 </div>
-                <div className="font-bold text-green-600 text-lg">
+                <div className="font-bold text-blue-600 text-lg">
+                  {testimonials[currentSlide].improvement}
+                </div>
+              </div>
+              <div className="text-center p-4 bg-indigo-50 rounded-xl">
+                <div className="text-sm text-gray-500 mb-1">
+                  Implementation Time
+                </div>
+                <div className="font-bold text-blue-600 text-lg">
                   {testimonials[currentSlide].timeframe}
+                </div>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-xl">
+                <div className="text-sm text-gray-500 mb-1">
+                  Favorite Feature
+                </div>
+                <div className="font-bold text-blue-600 text-lg">
+                  {testimonials[currentSlide].feature}
                 </div>
               </div>
             </div>
@@ -273,19 +288,19 @@ const Testimonials = () => {
           <button
             onClick={prevSlide}
             disabled={isTransitioning}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-green-50 rounded-full p-3 shadow-lg border border-green-100 transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-blue-50 rounded-full p-3 shadow-lg border border-blue-100 transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             aria-label="Previous testimonial"
           >
-            <ChevronLeft className="w-6 h-6 text-green-600" />
+            <ChevronLeft className="w-6 h-6 text-blue-600" />
           </button>
 
           <button
             onClick={nextSlide}
             disabled={isTransitioning}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-green-50 rounded-full p-3 shadow-lg border border-green-100 transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white hover:bg-blue-50 rounded-full p-3 shadow-lg border border-blue-100 transition-all duration-200 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             aria-label="Next testimonial"
           >
-            <ChevronRight className="w-6 h-6 text-green-600" />
+            <ChevronRight className="w-6 h-6 text-blue-600" />
           </button>
         </div>
 
@@ -300,8 +315,8 @@ const Testimonials = () => {
                 disabled={isTransitioning}
                 className={`w-3 h-3 rounded-full transition-all duration-500 disabled:cursor-not-allowed ${
                   index === currentSlide
-                    ? "bg-green-600 w-8 shadow-lg"
-                    : "bg-gray-300 hover:bg-green-400 transform hover:scale-125"
+                    ? "bg-blue-600 w-8 shadow-lg"
+                    : "bg-gray-300 hover:bg-blue-400 transform hover:scale-125"
                 } ${isTransitioning ? "opacity-50" : "opacity-100"}`}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
@@ -311,25 +326,25 @@ const Testimonials = () => {
           {/* Auto-play toggle */}
           <button
             onClick={toggleAutoPlay}
-            className="ml-4 p-2 rounded-full bg-white border border-green-200 hover:bg-green-50 transition-all duration-200"
+            className="ml-4 p-2 rounded-full bg-white border border-blue-200 hover:bg-blue-50 transition-all duration-200"
             aria-label={isAutoPlaying ? "Pause auto-play" : "Start auto-play"}
           >
             {isAutoPlaying ? (
-              <Pause className="w-4 h-4 text-green-600" />
+              <Pause className="w-4 h-4 text-blue-600" />
             ) : (
-              <Play className="w-4 h-4 text-green-600" />
+              <Play className="w-4 h-4 text-blue-600" />
             )}
           </button>
         </div>
 
         {/* Bottom CTA */}
         <div className="text-center mt-12">
-          <div className="inline-flex items-center bg-green-100 rounded-full px-8 py-4 text-green-800 text-lg font-medium">
-            <Heart className="w-6 h-6 mr-3" />
-            Over 50,000 peaceful nights restored this year
+          <div className="inline-flex items-center bg-blue-100 rounded-full px-8 py-4 text-blue-800 text-lg font-medium">
+            <Zap className="w-6 h-6 mr-3" />
+            Over 1 million documents processed this month
           </div>
           <p className="mt-4 text-gray-600">
-            Join our community of well-rested individuals
+            Join our community of efficient document creators
           </p>
         </div>
       </div>
